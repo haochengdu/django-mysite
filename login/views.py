@@ -2,7 +2,7 @@
 import datetime
 
 from django.shortcuts import render, redirect
-
+from django.utils import timezone
 from mysite import settings
 from .utils import hash_code, make_confirm_string, send_mail
 from .forms import UserForm, RegisterForm
@@ -25,6 +25,9 @@ def login(request):
             password = login_form.cleaned_data['password']
             try:
                 user = User.objects.get(name=username)
+                if not user.has_confirmed:
+                    message = '请先通过邮箱确认'
+                    return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
                     print('登录成功')
                     request.session['is_login'] = True
@@ -105,7 +108,7 @@ def logout(request):
 
 def user_confirm(request):
     """注册确认"""
-    code = request.GET.get('code')
+    code = request.GET.get('code', None)
     message = ''
     try:
         confirm = ConfirmString.objects.get(code=code)
@@ -114,7 +117,8 @@ def user_confirm(request):
         return render(request, 'login/confirm.html', locals())
 
     c_time = confirm.c_time
-    now_time = datetime.datetime.now()
+    # hahah = datetime.datetime.now()  # 无时区
+    now_time = timezone.now()  # django中的time 有时区
     if now_time > (c_time + datetime.timedelta(settings.CONFIRM_DAYS)):
         confirm.delete()
         message = '您的邮件已经过期！请重新注册!'

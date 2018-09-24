@@ -130,8 +130,8 @@ STATICFILES_DIRS = [
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sina.cn'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = '18227754507m@sina.cn'
-EMAIL_HOST_PASSWORD = '199111154510'
+EMAIL_HOST_USER = '新浪邮箱账号@sina.cn'
+EMAIL_HOST_PASSWORD = 'password'
 # 注册有效期天数
 CONFIRM_DAYS = 7
 
